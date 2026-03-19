@@ -1,5 +1,14 @@
-import React, { useState, useCallback } from "react";
-import { View, StyleSheet, ScrollView, Pressable, Image } from "react-native";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { View, StyleSheet, ScrollView, Pressable, Image, Text } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withRepeat,
+  withDelay,
+  Easing,
+  cancelAnimation,
+} from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 import { useGameStore } from "../../engine/GameState";
 import { SPRITES, WEAPON_SPRITE_INDEX, getClipStyle } from "../../engine/SpriteSheet";
@@ -23,6 +32,7 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
   const { t } = useTranslation();
   const {
     villainHp, villainMaxHp, villainImageUri,
+    villainName, customChants,
     selectedChant, selectedWeapon, selectedMove,
     turn, chargeCount, tigerActive, isAnimating,
     lastDamage, lastCrit,
@@ -30,16 +40,51 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
     performAttack, applyDot, feedTiger, triggerTiger,
     setAnimating,
   } = useGameStore();
+  const displayName = villainName || "小人";
 
   const [showChantBubble, setShowChantBubble] = useState(false);
   const [isHit, setIsHit] = useState(false);
   const [showDamage, setShowDamage] = useState(false);
   const [activeTab, setActiveTab] = useState<"chant" | "weapon" | "move">("chant");
+  const [chantDropdownOpen, setChantDropdownOpen] = useState(false);
+  const [chantHistory, setChantHistory] = useState<string[]>([]);
+  const [selectedCustomChant, setSelectedCustomChant] = useState<string | null>(null);
+  const marqueeX = useSharedValue(0);
+  const marqueeContainerWidth = useRef(300);
+  const marqueeTextWidth = useRef(0);
+
+  // Restart marquee animation when history changes
+  useEffect(() => {
+    if (chantHistory.length === 0) return;
+    // Estimate text width: each CJK char ~14px, latin ~8px
+    const text = chantHistory.join("  ·  ");
+    const estCharWidth = /[\u4e00-\u9fff]/.test(text) ? 12 : 8;
+    const textW = marqueeTextWidth.current || text.length * estCharWidth;
+    const containerW = marqueeContainerWidth.current;
+    const totalDistance = containerW + textW;
+    const duration = Math.max(totalDistance * 30, 6000);
+    // Cancel previous, start from right edge, scroll to left
+    cancelAnimation(marqueeX);
+    marqueeX.value = containerW;
+    marqueeX.value = withDelay(100, withRepeat(
+      withTiming(-textW, { duration, easing: Easing.linear }),
+      -1,
+      false,
+    ));
+  }, [chantHistory.length]);
+
+  const marqueeStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: marqueeX.value }],
+  }));
 
   const handleAttack = useCallback(() => {
     if (isAnimating) return;
     setAnimating(true);
     setShowChantBubble(true);
+
+    // Record chant to history
+    const chantText = selectedCustomChant || t(selectedChant.i18nKey);
+    setChantHistory((prev) => [chantText, ...prev].slice(0, 20));
 
     if (Math.random() < 0.1 && !tigerActive) {
       triggerTiger();
@@ -52,19 +97,19 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
 
       setTimeout(() => {
         applyDot();
-        setShowChantBubble(false);
         setIsHit(false);
 
         setTimeout(() => {
+          setShowChantBubble(false);
           setShowDamage(false);
           setAnimating(false);
           if (useGameStore.getState().villainHp <= 0) {
             setTimeout(() => onVictory(), 500);
           }
-        }, 500);
+        }, 1500);
       }, 600);
     }, 500);
-  }, [isAnimating]);
+  }, [isAnimating, selectedChant]);
 
   // Weapon icon for selection panel
   const renderWeaponIcon = (weaponId: string, iconScale: number = 1) => {
@@ -91,7 +136,22 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
         <View style={styles.turnBadge}>
           <PixelText size="sm">{t("battle.turn", { turn })}</PixelText>
         </View>
-        <HPBar hp={villainHp} maxHp={villainMaxHp} />
+        <HPBar hp={villainHp} maxHp={villainMaxHp} label={`${displayName} 氣數`} />
+        {/* Poem history marquee */}
+        {chantHistory.length > 0 && (
+          <View
+            style={styles.chantMarquee}
+            onLayout={(e) => { marqueeContainerWidth.current = e.nativeEvent.layout.width; }}
+          >
+            <Animated.Text
+              style={[styles.chantMarqueeText, marqueeStyle]}
+              numberOfLines={1}
+              onLayout={(e) => { marqueeTextWidth.current = e.nativeEvent.layout.width; }}
+            >
+              {chantHistory.join("  ·  ")}
+            </Animated.Text>
+          </View>
+        )}
       </View>
 
       {/* Main battle area — VERTICAL layout: granny on top, effigy below on ground */}
@@ -99,7 +159,7 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
         {/* Granny — positioned above, hitting downward */}
         <View style={styles.grannyArea}>
           <View style={{ position: "relative" }}>
-            <ChantBubble text={t(selectedChant.i18nKey)} visible={showChantBubble} />
+            <ChantBubble text={selectedCustomChant || t(selectedChant.i18nKey)} visible={showChantBubble} />
             <HitterSprite
               isAttacking={isAnimating}
               moveId={selectedMove.id}
@@ -162,21 +222,53 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
 
         {/* Selection panel */}
         {activeTab === "chant" ? (
-          <ScrollView style={styles.selectionPanel} showsVerticalScrollIndicator={false}>
-            <View style={styles.chantGrid}>
-              {CHANTS.map((chant) => (
-                <Pressable
-                  key={chant.id}
-                  onPress={() => selectChant(chant.id)}
-                  style={[styles.chantItem, selectedChant.id === chant.id && styles.selectedItem]}
-                >
-                  <PixelText size="sm" style={styles.selectionText}>
-                    {t(chant.i18nKey)}
-                  </PixelText>
-                </Pressable>
-              ))}
-            </View>
-          </ScrollView>
+          <View style={styles.chantDropdownContainer}>
+            {/* Selected chant display / toggle */}
+            <Pressable
+              onPress={() => setChantDropdownOpen(!chantDropdownOpen)}
+              style={[styles.chantSelected, chantDropdownOpen && styles.chantSelectedOpen]}
+            >
+              <PixelText size="sm" numberOfLines={1} style={{ flex: 1 }}>
+                {selectedCustomChant || t(selectedChant.i18nKey)}
+              </PixelText>
+              <PixelText size="sm">{chantDropdownOpen ? "▲" : "▼"}</PixelText>
+            </Pressable>
+
+            {/* Dropdown list */}
+            {chantDropdownOpen && (
+              <ScrollView style={styles.chantDropdownList} showsVerticalScrollIndicator={false}>
+                {CHANTS.map((chant) => (
+                  <Pressable
+                    key={chant.id}
+                    onPress={() => {
+                      selectChant(chant.id);
+                      setSelectedCustomChant(null);
+                      setChantDropdownOpen(false);
+                    }}
+                    style={[styles.chantDropdownItem, !selectedCustomChant && selectedChant.id === chant.id && styles.selectedItem]}
+                  >
+                    <PixelText size="sm" numberOfLines={1}>
+                      {t(chant.i18nKey)}
+                    </PixelText>
+                  </Pressable>
+                ))}
+                {customChants.map((chant, i) => (
+                  <Pressable
+                    key={`custom-${i}`}
+                    onPress={() => {
+                      setSelectedCustomChant(chant);
+                      setChantDropdownOpen(false);
+                    }}
+                    style={[styles.chantDropdownItem, selectedCustomChant === chant && styles.selectedItem]}
+                  >
+                    <PixelText size="sm" numberOfLines={1} style={{ color: "#2ecc71" }}>
+                      ★ {chant}
+                    </PixelText>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            )}
+          </View>
         ) : (
           <ScrollView style={styles.selectionPanel} horizontal showsHorizontalScrollIndicator={false}>
             {activeTab === "weapon" && WEAPONS.map((weapon) => (
@@ -253,6 +345,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#f1c40f",
     marginBottom: 4,
+  },
+  chantMarquee: {
+    marginTop: 6,
+    marginHorizontal: 4,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    paddingVertical: 3,
+    overflow: "hidden",
+    borderRadius: 2,
+  },
+  chantMarqueeText: {
+    color: "rgba(241, 196, 15, 0.7)",
+    fontSize: 10,
+    fontWeight: "bold",
+    letterSpacing: 1,
   },
   // Vertical battle layout: granny on top, effigy below
   battleArea: {
@@ -336,17 +442,30 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "rgba(241, 196, 15, 0.3)",
   },
-  chantGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    padding: 3,
+  chantDropdownContainer: {
+    borderTopWidth: 1,
+    borderTopColor: "rgba(241, 196, 15, 0.3)",
   },
-  chantItem: {
-    width: "50%",
-    padding: 6,
-    borderWidth: 2,
-    borderColor: "#555",
-    backgroundColor: "rgba(26, 10, 46, 0.9)",
+  chantSelected: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "rgba(241, 196, 15, 0.15)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(241, 196, 15, 0.3)",
+    gap: 8,
+  },
+  chantSelectedOpen: {
+    borderBottomColor: "#f1c40f",
+  },
+  chantDropdownList: {
+    maxHeight: 150,
+  },
+  chantDropdownItem: {
+    padding: 8,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255,255,255,0.1)",
   },
   selectionItem: {
     padding: 6,

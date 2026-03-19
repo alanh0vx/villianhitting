@@ -3,6 +3,7 @@
     "title": "打小人",
     "subtitle": "鵝頸橋下",
     "start": "開始儀式",
+    "tutorial": "玩法教學",
     "language": "語言"
   },
   "ceremony": {
@@ -25,8 +26,15 @@
     "uploadPhoto": "上傳小人相片",
     "takePhoto": "影相",
     "choosePhoto": "揀相",
-    "villainReady": "小人現形！",
-    "villainHP": "小人氣數",
+    "faceHint": "建議使用正面大頭相效果最佳",
+    "useDefault": "用預設小人樣",
+    "villainName": "小人名（選填）",
+    "villainNamePlaceholder": "輸入小人名字...",
+    "customChant": "自訂口訣（選填）",
+    "customChantPlaceholder": "打你個XXX，等你OOO",
+    "addChant": "加口訣",
+    "villainReady": "{{name}}現形！",
+    "villainHP": "{{name}}氣數",
     "grannyStamina": "神婆體力"
   },
   "battle": {
@@ -39,7 +47,7 @@
     "turn": "第 {{turn}} 回合",
     "tigerEvent": "白虎出沒！餵豬肉加攻擊力！",
     "tigerFeed": "餵白虎",
-    "defeated": "小人已滅！"
+    "defeated": "{{name}}已滅！"
   },
   "chants": {
     "head": "打你個小人頭，等你有氣冇定抖",
@@ -66,12 +74,28 @@
     "ultimate": "必殺：神婆之怒"
   },
   "victory": {
-    "title": "小人已滅！",
+    "title": "{{name}}已滅！",
     "celebrate": "恭喜恭喜！",
     "playAgain": "再打過",
     "holyBlocks": "聖杯！儀式圓滿！",
     "laughBlocks": "笑杯！再擲一次",
     "angryBlocks": "陰杯！再擲一次"
+  },
+  "tutorial": {
+    "title": "玩法教學",
+    "step1": "① 請神 — 恭請神明到場，為儀式開光",
+    "step2": "② 稟告 — 上傳小人相片，可改名、加自訂口訣",
+    "step3": "③ 打小人 — 揀口訣、法器、招式，狂打小人！",
+    "step4": "④ 祭白虎 — 隨機出現白虎，餵豬肉加攻擊",
+    "step5": "⑤ 化解 — 打低小人後，化解惡運",
+    "step6": "⑥ 祈福 — 求神賜福，保佑平安",
+    "step7": "⑦ 進寶 — 燒元寶金紙，答謝神恩",
+    "step8": "⑧ 擲筊 — 擲聖杯確認儀式圓滿",
+    "tips": "小貼士",
+    "tip1": "唔同口訣有唔同效果：爆擊、減防、持續傷害等",
+    "tip2": "法器攻擊力各有唔同，報紙可以連打",
+    "tip3": "儲夠氣可以放必殺技！",
+    "close": "明白喇！"
   },
   "blessings": {
     "peace": "出入平安",

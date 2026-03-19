@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Pressable, Image } from "react-native";
+import { View, StyleSheet, Pressable, Image, ScrollView, Modal } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import Animated, {
@@ -22,6 +22,7 @@ export default function TitleScreen() {
   const { t, i18n } = useTranslation();
   const reset = useGameStore((s) => s.reset);
   const [grannyFrame, setGrannyFrame] = useState(0);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const titleScale = useSharedValue(0);
   const subtitleOpacity = useSharedValue(0);
@@ -111,10 +112,54 @@ export default function TitleScreen() {
       {/* Buttons */}
       <View style={styles.buttonArea}>
         <PixelButton title={t("app.start")} onPress={handleStart} color="#e74c3c" size="lg" />
+        <PixelButton title={`📖 ${t("app.tutorial")}`} onPress={() => setShowTutorial(true)} color="#3498db" size="sm" />
         <Pressable onPress={toggleLanguage} style={styles.langButton}>
           <PixelText size="sm">🌐 {i18n.language === "zh-HK" ? "English" : "廣東話"}</PixelText>
         </Pressable>
       </View>
+
+      {/* Tutorial Modal */}
+      <Modal visible={showTutorial} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <PixelText size="lg" style={styles.modalTitle}>{t("tutorial.title")}</PixelText>
+
+              <PixelText size="sm" style={styles.modalSubtitle}>
+                {i18n.language === "zh-HK"
+                  ? "打小人係香港鵝頸橋底嘅傳統民間習俗。相傳驚蟄當日百蟲初醒，人們會請神婆以拖鞋拍打紙小人，將惡運、小人統統打走，祈求神明庇佑、趨吉避凶。儀式共分八個步驟，由請神到擲筊，缺一不可。"
+                  : "Villain Hitting (打小人) is a traditional folk ritual from the Canal Road Flyover in Hong Kong. On the day of Jingzhe (Awakening of Insects), people hire a granny priestess to beat a paper effigy of their \"villain\" with a sandal, driving away bad luck and ill-wishers. The full ceremony has 8 steps, from inviting the gods to divination."
+                }
+              </PixelText>
+
+              <View style={styles.modalDivider} />
+
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step1")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step2")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step3")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step4")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step5")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step6")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step7")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialStep}>{t("tutorial.step8")}</PixelText>
+
+              <View style={styles.modalDivider} />
+
+              <PixelText size="md" style={{ color: "#f39c12", marginBottom: 8 }}>{t("tutorial.tips")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialTip}>{t("tutorial.tip1")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialTip}>{t("tutorial.tip2")}</PixelText>
+              <PixelText size="sm" style={styles.tutorialTip}>{t("tutorial.tip3")}</PixelText>
+            </ScrollView>
+
+            <PixelButton
+              title={t("tutorial.close")}
+              onPress={() => setShowTutorial(false)}
+              color="#e74c3c"
+              style={{ marginTop: 16 }}
+            />
+          </View>
+        </View>
+      </Modal>
 
       <PixelText size="sm" style={styles.footer}>鵝頸橋下打小人</PixelText>
     </View>
@@ -178,5 +223,46 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     color: "rgba(255,255,255,0.3)",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: "#1a0a2e",
+    borderWidth: 2,
+    borderColor: "#f1c40f",
+    padding: 20,
+    maxHeight: "85%",
+    width: "100%",
+    maxWidth: 400,
+  },
+  modalTitle: {
+    color: "#f1c40f",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  modalSubtitle: {
+    color: "#ccc",
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  modalDivider: {
+    height: 1,
+    backgroundColor: "rgba(241, 196, 15, 0.3)",
+    marginVertical: 12,
+  },
+  tutorialStep: {
+    color: "#fff",
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  tutorialTip: {
+    color: "#aaa",
+    marginBottom: 6,
+    lineHeight: 18,
   },
 });

@@ -51,30 +51,25 @@ export function VillainEffigy({ imageUri, hp, maxHp, isHit }: VillainEffigyProps
 
   return (
     <Animated.View style={[styles.container, animStyle]}>
-      {/* Effigy sprite */}
-      <View style={clip.container}>
+      {/* Effigy sprite with face overlay inside the same sized container */}
+      <View style={[clip.container, { position: "relative" }]}>
         <Image
           source={SPRITES.villainEffigy.source}
           style={clip.image}
           resizeMode="stretch"
         />
-      </View>
 
-      {/* Villain face overlay — positioned on the face area of the effigy */}
-      {imageUri && (
-        <View style={[styles.faceOverlay, {
-          width: 28 * scale,
-          height: 28 * scale,
-          top: 18 * scale,
-          left: (64 / 2 - 14) * scale,
-        }]}>
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.faceImage}
-            resizeMode="cover"
-          />
-        </View>
-      )}
+        {/* Villain face overlay — percentage-based to fit the square box on the paper */}
+        {imageUri && (
+          <View style={styles.faceOverlay}>
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.faceImage}
+              resizeMode="cover"
+            />
+          </View>
+        )}
+      </View>
     </Animated.View>
   );
 }
@@ -85,9 +80,12 @@ const styles = StyleSheet.create({
   },
   faceOverlay: {
     position: "absolute",
+    top: "25%",
+    left: "35%",
+    width: "32%",
+    height: "20%",
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.3)",
+    borderRadius: 6,
   },
   faceImage: {
     width: "100%",

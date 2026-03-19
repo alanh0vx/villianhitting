@@ -11,9 +11,10 @@ import { PixelText } from "../ui/PixelText";
 interface HPBarProps {
   hp: number;
   maxHp: number;
+  label?: string;
 }
 
-export function HPBar({ hp, maxHp }: HPBarProps) {
+export function HPBar({ hp, maxHp, label }: HPBarProps) {
   const widthAnim = useSharedValue(100);
   const shakeX = useSharedValue(0);
 
@@ -43,7 +44,7 @@ export function HPBar({ hp, maxHp }: HPBarProps) {
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       <View style={styles.labelRow}>
-        <PixelText size="sm">氣數</PixelText>
+        <PixelText size="sm">{label || "氣數"}</PixelText>
         <PixelText size="sm">
           {hp} / {maxHp}
         </PixelText>

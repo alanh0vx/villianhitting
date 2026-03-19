@@ -32,6 +32,8 @@ export function getTearState(hp: number, maxHp: number): TearState {
 export interface GameState {
   ceremonyStep: CeremonyStep;
   villainImageUri: string | null;
+  villainName: string;
+  customChants: string[];
   villainHp: number;
   villainMaxHp: number;
   grannyStamina: number;
@@ -52,6 +54,8 @@ export interface GameState {
   // Actions
   setCeremonyStep: (step: CeremonyStep) => void;
   setVillainImage: (uri: string) => void;
+  setVillainName: (name: string) => void;
+  setCustomChants: (chants: string[]) => void;
   initVillain: () => void;
   selectChant: (id: ChantTarget) => void;
   selectWeapon: (id: string) => void;
@@ -67,6 +71,8 @@ export interface GameState {
 export const useGameStore = create<GameState>((set, get) => ({
   ceremonyStep: "title",
   villainImageUri: null,
+  villainName: "",
+  customChants: [],
   villainHp: 500,
   villainMaxHp: 500,
   grannyStamina: 100,
@@ -87,6 +93,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   setCeremonyStep: (step) => set({ ceremonyStep: step }),
 
   setVillainImage: (uri) => set({ villainImageUri: uri }),
+
+  setVillainName: (name) => set({ villainName: name }),
+
+  setCustomChants: (chants) => set({ customChants: chants }),
 
   initVillain: () => {
     const hp = Math.floor(Math.random() * 900) + 100; // 100-999
@@ -192,6 +202,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       ceremonyStep: "title",
       villainImageUri: null,
+      villainName: "",
+      customChants: [],
       villainHp: 500,
       villainMaxHp: 500,
       grannyStamina: 100,

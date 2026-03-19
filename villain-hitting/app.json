@@ -31,7 +31,8 @@
     "scheme": "villain-hitting",
     "plugins": [
       "expo-router",
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-asset"
     ]
   }
 }

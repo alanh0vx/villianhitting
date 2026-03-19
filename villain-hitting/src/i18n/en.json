@@ -3,6 +3,7 @@
     "title": "Villain Hitting",
     "subtitle": "Under Canal Road Flyover",
     "start": "Begin Ceremony",
+    "tutorial": "How to Play",
     "language": "Language"
   },
   "ceremony": {
@@ -25,8 +26,15 @@
     "uploadPhoto": "Upload Villain Photo",
     "takePhoto": "Take Photo",
     "choosePhoto": "Choose Photo",
-    "villainReady": "Villain Revealed!",
-    "villainHP": "Villain HP",
+    "faceHint": "Use a full face photo for best results",
+    "useDefault": "Use default villain",
+    "villainName": "Villain Name (optional)",
+    "villainNamePlaceholder": "Enter villain name...",
+    "customChant": "Custom Chant (optional)",
+    "customChantPlaceholder": "Hit your villain XXX, make them OOO",
+    "addChant": "Add Chant",
+    "villainReady": "{{name}} Revealed!",
+    "villainHP": "{{name}} HP",
     "grannyStamina": "Granny Stamina"
   },
   "battle": {
@@ -39,7 +47,7 @@
     "turn": "Turn {{turn}}",
     "tigerEvent": "White Tiger appears! Feed pork for damage bonus!",
     "tigerFeed": "Feed Tiger",
-    "defeated": "Villain Defeated!"
+    "defeated": "{{name}} Defeated!"
   },
   "chants": {
     "head": "Hit your villain head, leave you breathless with dread",
@@ -66,12 +74,28 @@
     "ultimate": "Ultimate: Granny's Wrath"
   },
   "victory": {
-    "title": "Villain Defeated!",
+    "title": "{{name}} Defeated!",
     "celebrate": "Congratulations!",
     "playAgain": "Play Again",
     "holyBlocks": "Holy Blocks! Ceremony complete!",
     "laughBlocks": "Laughing Blocks! Toss again",
     "angryBlocks": "Angry Blocks! Toss again"
+  },
+  "tutorial": {
+    "title": "How to Play",
+    "step1": "① Invite Gods — Light incense, invite deities to the ceremony",
+    "step2": "② Declaration — Upload villain photo, add name & custom chants",
+    "step3": "③ Hit Villain — Pick chants, weapons & moves to beat the villain!",
+    "step4": "④ Feed Tiger — Random tiger appears, feed pork for bonus damage",
+    "step5": "⑤ Dissolve — After defeating villain, dissolve bad luck",
+    "step6": "⑥ Blessing — Pray for blessings and peace",
+    "step7": "⑦ Burn Offerings — Burn gold paper to thank the gods",
+    "step8": "⑧ Divination — Toss blocks to confirm ceremony completion",
+    "tips": "Tips",
+    "tip1": "Different chants have different effects: crit, def debuff, DoT, etc.",
+    "tip2": "Each weapon has unique damage — newspaper can multi-hit!",
+    "tip3": "Build up charge to unleash ultimate moves!",
+    "close": "Got it!"
   },
   "blessings": {
     "peace": "Peace & Safety",

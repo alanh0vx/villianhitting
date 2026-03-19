@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, Alert } from "react-native";
+import { View, StyleSheet, Image, Alert, TextInput, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import * as ImagePicker from "expo-image-picker";
@@ -12,20 +12,55 @@ import { PixelText } from "../../src/components/ui/PixelText";
 import { PixelButton } from "../../src/components/ui/PixelButton";
 import { MenuPanel } from "../../src/components/ui/MenuPanel";
 import { useGameStore } from "../../src/engine/GameState";
+import { Asset } from "expo-asset";
 import { SPRITES, getClipStyle } from "../../src/engine/SpriteSheet";
 import { validateFaceImage, pixelateImage } from "../../src/utils/pixelateImage";
 import { useCeremonyGuard } from "../../src/hooks/useCeremonyGuard";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const SAMPLE_VILLAIN = require("../../src/assets/sprites/sample-villain.jpg");
+
 export default function CreateVillainScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { setVillainImage, initVillain, villainMaxHp, setCeremonyStep } = useGameStore();
+  const { setVillainImage, initVillain, villainMaxHp, setCeremonyStep, setVillainName, setCustomChants } = useGameStore();
   useCeremonyGuard("invite-gods");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [pixelatedUri, setPixelatedUri] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [chantInput, setChantInput] = useState("");
+  const [chants, setChants] = useState<string[]>([]);
 
   const effigyScale = useSharedValue(0);
+
+  const useDefaultVillain = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const asset = await Asset.fromModule(SAMPLE_VILLAIN).downloadAsync();
+      const uri = asset.localUri ?? asset.uri;
+
+      let processedUri = uri;
+      try {
+        processedUri = await pixelateImage(uri);
+      } catch {
+        processedUri = uri;
+      }
+
+      setImageUri(uri);
+      setPixelatedUri(processedUri);
+      setVillainImage(processedUri);
+      initVillain();
+      setCeremonyStep("create-villain");
+      effigyScale.value = withSpring(1, { damping: 8, stiffness: 120 });
+    } catch {
+      Alert.alert("Error", "Failed to load default image");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const pickImage = async (useCamera: boolean) => {
     try {
@@ -101,7 +136,7 @@ export default function CreateVillainScreen() {
         </PixelText>
       </View>
 
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <PixelText size="lg" style={styles.title}>
           {t("ceremony.uploadPhoto")}
         </PixelText>
@@ -116,6 +151,9 @@ export default function CreateVillainScreen() {
         {/* Photo buttons */}
         {!pixelatedUri && (
           <View style={styles.photoButtons}>
+            <PixelText size="sm" style={styles.faceHint}>
+              {t("ceremony.faceHint")}
+            </PixelText>
             <PixelButton
               title={`📷 ${t("ceremony.takePhoto")}`}
               onPress={() => pickImage(true)}
@@ -134,19 +172,16 @@ export default function CreateVillainScreen() {
           <Animated.View style={[styles.effigyContainer, effigyStyle]}>
             <MenuPanel style={styles.effigyPanel}>
               <PixelText size="md" style={{ color: "#f1c40f" }}>
-                {t("ceremony.villainReady")}
+                {t("ceremony.villainReady", { name: nameInput || "小人" })}
               </PixelText>
 
-              {/* Paper effigy sprite with photo overlay */}
-              <View style={styles.effigyWrapper}>
-                <View style={effigyClip.container}>
-                  <Image
-                    source={SPRITES.villainEffigy.source}
-                    style={effigyClip.image}
-                    resizeMode="stretch"
-                  />
-                </View>
-                {/* Pixelated villain face */}
+              {/* Paper effigy sprite with photo overlay inside */}
+              <View style={[effigyClip.container, { position: "relative" }]}>
+                <Image
+                  source={SPRITES.villainEffigy.source}
+                  style={effigyClip.image}
+                  resizeMode="stretch"
+                />
                 <View style={styles.faceOverlay}>
                   <Image
                     source={{ uri: pixelatedUri }}
@@ -170,14 +205,69 @@ export default function CreateVillainScreen() {
               </View>
 
               <View style={styles.hpDisplay}>
-                <PixelText size="sm">{t("ceremony.villainHP")}:</PixelText>
+                <PixelText size="sm">{t("ceremony.villainHP", { name: nameInput || "小人" })}:</PixelText>
                 <PixelText size="lg" style={{ color: "#e74c3c" }}>{villainMaxHp}</PixelText>
               </View>
             </MenuPanel>
 
+            {/* Villain name input */}
+            <View style={styles.inputSection}>
+              <PixelText size="sm" style={styles.inputLabel}>{t("ceremony.villainName")}</PixelText>
+              <TextInput
+                style={styles.textInput}
+                value={nameInput}
+                onChangeText={setNameInput}
+                placeholder={t("ceremony.villainNamePlaceholder")}
+                placeholderTextColor="#666"
+                maxLength={20}
+              />
+            </View>
+
+            {/* Custom chant input */}
+            <View style={styles.inputSection}>
+              <PixelText size="sm" style={styles.inputLabel}>{t("ceremony.customChant")}</PixelText>
+              <View style={styles.chantInputRow}>
+                <TextInput
+                  style={[styles.textInput, { flex: 1 }]}
+                  value={chantInput}
+                  onChangeText={setChantInput}
+                  placeholder={t("ceremony.customChantPlaceholder")}
+                  placeholderTextColor="#666"
+                  maxLength={50}
+                />
+                <Pressable
+                  style={styles.addChantBtn}
+                  onPress={() => {
+                    if (chantInput.trim()) {
+                      setChants((prev) => [...prev, chantInput.trim()]);
+                      setChantInput("");
+                    }
+                  }}
+                >
+                  <PixelText size="sm" style={{ color: "#f1c40f" }}>+</PixelText>
+                </Pressable>
+              </View>
+              {chants.length > 0 && (
+                <View style={styles.chantList}>
+                  {chants.map((c, i) => (
+                    <View key={i} style={styles.chantTag}>
+                      <PixelText size="sm" numberOfLines={1} style={{ flex: 1 }}>{c}</PixelText>
+                      <Pressable onPress={() => setChants((prev) => prev.filter((_, j) => j !== i))}>
+                        <PixelText size="sm" style={{ color: "#e74c3c" }}>✕</PixelText>
+                      </Pressable>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+
             <PixelButton
               title={`👡 ${t("battle.title")}`}
-              onPress={() => router.push("/battle")}
+              onPress={() => {
+                setVillainName(nameInput.trim() || "小人");
+                setCustomChants(chants);
+                router.push("/battle");
+              }}
               color="#e74c3c"
               size="lg"
             />
@@ -197,21 +287,18 @@ export default function CreateVillainScreen() {
           </Animated.View>
         )}
 
-        {/* Skip for testing */}
+        {/* Use default villain image */}
         {!pixelatedUri && (
           <PixelButton
-            title="跳過 (Skip)"
-            onPress={() => {
-              initVillain();
-              setCeremonyStep("create-villain");
-              router.push("/battle");
-            }}
+            title={t("ceremony.useDefault")}
+            onPress={useDefaultVillain}
             color="#555"
             size="sm"
             style={{ marginTop: 20 }}
+            disabled={loading}
           />
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -243,10 +330,12 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
+    paddingTop: 80,
+    paddingBottom: 40,
   },
   title: {
     color: "#f1c40f",
@@ -261,6 +350,11 @@ const styles = StyleSheet.create({
   },
   photoButtons: {
     gap: 16,
+    alignItems: "center",
+  },
+  faceHint: {
+    color: "#aaa",
+    marginBottom: 4,
   },
   effigyContainer: {
     alignItems: "center",
@@ -270,18 +364,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  effigyWrapper: {
-    position: "relative",
-  },
   faceOverlay: {
     position: "absolute",
-    top: 36,
-    left: 36,
-    width: 56,
-    height: 56,
+    top: "25%",
+    left: "35%",
+    width: "32%",
+    height: "20%",
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.3)",
+    borderRadius: 6,
   },
   faceImage: {
     width: "100%",
@@ -306,6 +396,48 @@ const styles = StyleSheet.create({
   hpDisplay: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 8,
+  },
+  inputSection: {
+    width: "100%",
+    gap: 4,
+  },
+  inputLabel: {
+    color: "#aaa",
+  },
+  textInput: {
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(241, 196, 15, 0.4)",
+    color: "#fff",
+    padding: 8,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  chantInputRow: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  addChantBtn: {
+    backgroundColor: "rgba(241, 196, 15, 0.2)",
+    borderWidth: 1,
+    borderColor: "#f1c40f",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  chantList: {
+    gap: 4,
+    marginTop: 4,
+  },
+  chantTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(241, 196, 15, 0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(241, 196, 15, 0.3)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     gap: 8,
   },
 });

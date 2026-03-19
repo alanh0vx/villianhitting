@@ -20,7 +20,8 @@ import { useCeremonyGuard } from "../../src/hooks/useCeremonyGuard";
 export default function VictoryScreen() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { turn } = useGameStore();
+  const { turn, villainName } = useGameStore();
+  const displayName = villainName || "小人";
   useCeremonyGuard("battle");
   const [grannyFrame, setGrannyFrame] = useState(0);
 
@@ -84,7 +85,7 @@ export default function VictoryScreen() {
 
       {/* Victory title */}
       <Animated.View style={[styles.titleArea, titleStyle]}>
-        <PixelText size="xl" style={styles.title}>{t("victory.title")}</PixelText>
+        <PixelText size="xl" style={styles.title}>{t("victory.title", { name: displayName })}</PixelText>
         <PixelText size="lg" style={styles.subtitle}>{t("victory.celebrate")}</PixelText>
       </Animated.View>
 

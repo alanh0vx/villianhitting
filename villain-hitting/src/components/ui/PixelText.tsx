@@ -5,6 +5,7 @@ interface PixelTextProps {
   children: React.ReactNode;
   style?: TextStyle;
   size?: "sm" | "md" | "lg" | "xl";
+  numberOfLines?: number;
 }
 
 const SIZES = {
@@ -14,9 +15,10 @@ const SIZES = {
   xl: 36,
 };
 
-export function PixelText({ children, style, size = "md" }: PixelTextProps) {
+export function PixelText({ children, style, size = "md", numberOfLines }: PixelTextProps) {
   return (
     <Text
+      numberOfLines={numberOfLines}
       style={[
         styles.text,
         { fontSize: SIZES[size] },
