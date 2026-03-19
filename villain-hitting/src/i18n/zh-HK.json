@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "打小人",
+    "subtitle": "鵝頸橋下",
+    "start": "開始儀式",
+    "language": "語言"
+  },
+  "ceremony": {
+    "inviteGods": "請神",
+    "inviteGodsDesc": "神婆點香，恭請神明到場",
+    "declaration": "稟告",
+    "declarationDesc": "稟告天地，揭示小人真面目",
+    "hitVillain": "打小人",
+    "feedTiger": "祭白虎",
+    "feedTigerDesc": "以生豬肉餵白虎，化解煞氣",
+    "dissolve": "化解",
+    "dissolveDesc": "掃走花生衣、芝麻，化解惡運",
+    "blessing": "祈福",
+    "blessingDesc": "求神賜福，保佑平安",
+    "burnOfferings": "進寶",
+    "burnOfferingsDesc": "燒元寶金紙，答謝神恩",
+    "divination": "擲筊",
+    "divinationDesc": "擲聖杯，確認儀式圓滿",
+    "tapToContinue": "輕觸繼續",
+    "uploadPhoto": "上傳小人相片",
+    "takePhoto": "影相",
+    "choosePhoto": "揀相",
+    "villainReady": "小人現形！",
+    "villainHP": "小人氣數",
+    "grannyStamina": "神婆體力"
+  },
+  "battle": {
+    "title": "打小人",
+    "selectChant": "揀口訣",
+    "selectWeapon": "揀法器",
+    "selectMove": "揀招式",
+    "hit": "打！",
+    "hp": "氣數",
+    "turn": "第 {{turn}} 回合",
+    "tigerEvent": "白虎出沒！餵豬肉加攻擊力！",
+    "tigerFeed": "餵白虎",
+    "defeated": "小人已滅！"
+  },
+  "chants": {
+    "head": "打你個小人頭，等你有氣冇定抖",
+    "face": "打你個小人面，等你有冤有仇難搵錢",
+    "eyes": "打你個小人眼，等你成世都犯難",
+    "ears": "打你個小人耳，等你冇鼻哥冇蟻紙",
+    "mouth": "打你個小人嘴，等你有氣冇掟遲",
+    "belly": "打你個小人肚，等你日日比人告",
+    "hands": "打你個小人手，等你有女冇得追",
+    "feet": "打你個小人腳，等你有鞋冇得着"
+  },
+  "weapons": {
+    "sandal": "拖鞋",
+    "clog": "木屐",
+    "brick": "磚頭",
+    "incenseBurner": "香爐",
+    "newspaper": "報紙"
+  },
+  "moves": {
+    "normalSlap": "普通拍打",
+    "comboSole": "連環鞋底",
+    "justiceFromAbove": "天降正義",
+    "whirlwindSweep": "旋風掃蕩",
+    "ultimate": "必殺：神婆之怒"
+  },
+  "victory": {
+    "title": "小人已滅！",
+    "celebrate": "恭喜恭喜！",
+    "playAgain": "再打過",
+    "holyBlocks": "聖杯！儀式圓滿！",
+    "laughBlocks": "笑杯！再擲一次",
+    "angryBlocks": "陰杯！再擲一次"
+  },
+  "blessings": {
+    "peace": "出入平安",
+    "wealth": "財源廣進",
+    "health": "身體健康",
+    "love": "姻緣美滿",
+    "career": "事業順利",
+    "family": "家宅平安"
+  }
+}

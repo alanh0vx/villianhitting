@@ -1,0 +1,15 @@
+# Hong Kong Style Villian Hitting game
+- hong kong style Villian Hitting game
+- default zh-hk cantonese style text
+- web version + ios app + android app, you decide the tech stack for me
+- user upload a villian image (real profile photo), system will base on the image, generate a 8bit or 16bit comic style character in a paper form
+- the villian will randomly be given a HP
+- then user pick a hitter to hit the villian
+- then follow the tradition (https://www.hkmemory.org/hkfestival/text/index.php?p=home&catId=123&photoNo=0) before start hitting
+- user selects the poem (poem.png) for the hitter to sing during the hitting (display as comic exclaimation chat bubble)
+- user can choose some 招式 for the hitter to hit the villian
+- the hit will deduct villian's HP, and the paper will be torn and torn reflecting the HP is losing
+- user can let hitter to choose what weapon (default a sandal)
+- when HP = 0, the round is finished, user and hitter will be happy
+- japanese comic cute style characters (default granny) and weapons (default sandal) and venue (default 鵝頸橋)
+- u provide me the correct prompt to generate the sprites for me in gemini, then i will save and u help to slice them

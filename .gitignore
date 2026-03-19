@@ -1,0 +1,65 @@
+# dependencies
+villain-hitting/node_modules/
+
+# Expo
+villain-hitting/.expo/
+villain-hitting/dist/
+villain-hitting/web-build/
+villain-hitting/expo-env.d.ts
+
+# Native (generated folders)
+villain-hitting/ios/
+villain-hitting/android/
+villain-hitting/.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# env files
+.env
+.env.*
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+
+# Docker
+docker-compose.override.yml
+
+# npm / yarn
+*.tgz
+.yarn-integrity
+
+# logs
+*.log

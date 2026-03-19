@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Villain Hitting",
+    "subtitle": "Under Canal Road Flyover",
+    "start": "Begin Ceremony",
+    "language": "Language"
+  },
+  "ceremony": {
+    "inviteGods": "Invite Deities",
+    "inviteGodsDesc": "Granny lights incense, inviting the gods",
+    "declaration": "Declaration",
+    "declarationDesc": "Declare to heaven and earth, reveal the villain",
+    "hitVillain": "Hit Villain",
+    "feedTiger": "Feed White Tiger",
+    "feedTigerDesc": "Feed raw pork to the white tiger to dispel evil",
+    "dissolve": "Dissolve Bad Luck",
+    "dissolveDesc": "Sweep away peanuts and sesame to dissolve misfortune",
+    "blessing": "Blessing",
+    "blessingDesc": "Pray for blessings and peace",
+    "burnOfferings": "Burn Offerings",
+    "burnOfferingsDesc": "Burn gold paper to thank the gods",
+    "divination": "Divination",
+    "divinationDesc": "Toss blocks to confirm ceremony completion",
+    "tapToContinue": "Tap to continue",
+    "uploadPhoto": "Upload Villain Photo",
+    "takePhoto": "Take Photo",
+    "choosePhoto": "Choose Photo",
+    "villainReady": "Villain Revealed!",
+    "villainHP": "Villain HP",
+    "grannyStamina": "Granny Stamina"
+  },
+  "battle": {
+    "title": "Hit the Villain",
+    "selectChant": "Select Chant",
+    "selectWeapon": "Select Weapon",
+    "selectMove": "Select Move",
+    "hit": "HIT!",
+    "hp": "HP",
+    "turn": "Turn {{turn}}",
+    "tigerEvent": "White Tiger appears! Feed pork for damage bonus!",
+    "tigerFeed": "Feed Tiger",
+    "defeated": "Villain Defeated!"
+  },
+  "chants": {
+    "head": "Hit your villain head, leave you breathless with dread",
+    "face": "Hit your villain face, no money for your disgrace",
+    "eyes": "Hit your villain eyes, a lifetime of demise",
+    "ears": "Hit your villain ears, stripped of wealth and tears",
+    "mouth": "Hit your villain mouth, your anger heading south",
+    "belly": "Hit your villain belly, sued daily on the telly",
+    "hands": "Hit your villain hands, no love at your commands",
+    "feet": "Hit your villain feet, no shoes upon the street"
+  },
+  "weapons": {
+    "sandal": "Sandal",
+    "clog": "Wooden Clog",
+    "brick": "Brick",
+    "incenseBurner": "Incense Burner",
+    "newspaper": "Newspaper"
+  },
+  "moves": {
+    "normalSlap": "Normal Slap",
+    "comboSole": "Combo Sole",
+    "justiceFromAbove": "Justice From Above",
+    "whirlwindSweep": "Whirlwind Sweep",
+    "ultimate": "Ultimate: Granny's Wrath"
+  },
+  "victory": {
+    "title": "Villain Defeated!",
+    "celebrate": "Congratulations!",
+    "playAgain": "Play Again",
+    "holyBlocks": "Holy Blocks! Ceremony complete!",
+    "laughBlocks": "Laughing Blocks! Toss again",
+    "angryBlocks": "Angry Blocks! Toss again"
+  },
+  "blessings": {
+    "peace": "Peace & Safety",
+    "wealth": "Abundant Wealth",
+    "health": "Good Health",
+    "love": "Love & Romance",
+    "career": "Career Success",
+    "family": "Family Harmony"
+  }
+}
