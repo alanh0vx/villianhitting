@@ -28,6 +28,9 @@
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
+    "experiments": {
+      "baseUrl": "/villianhitting"
+    },
     "scheme": "villain-hitting",
     "plugins": [
       "expo-router",

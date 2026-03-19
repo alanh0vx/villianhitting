@@ -1,5 +1,9 @@
 # 打小人 Villain Hitting Game
 
+<p align="center">
+  <img src="images/scene-declare.png" alt="打小人 Villain Hitting" width="480" />
+</p>
+
 A Hong Kong traditional 打小人 (villain hitting) folk ritual game. Upload a villain's photo, watch it transform into a pixel-art paper effigy, then let a cute chibi granny beat it with a sandal through the full traditional ceremony!
 
 ## Features
@@ -64,8 +68,16 @@ Open **http://localhost:8081** in your browser.
 # Install a new package
 docker compose exec dev npx expo install <package-name>
 
-# Export web build
+# Export web build (served from root "/")
 docker compose exec dev npx expo export --platform web
+
+# Export for subfolder hosting (e.g. yoursite.com/villianhitting/)
+# 1. Set experiments.baseUrl in villain-hitting/app.json:
+#    "experiments": { "baseUrl": "/villianhitting" }
+# 2. Export:
+docker compose exec dev npx expo export --platform web
+# 3. Copy villain-hitting/web-export/ contents to your subfolder
+# Note: Reset baseUrl to "." when switching back to root hosting.
 
 # Process raw sprites (after generating new artwork)
 docker compose exec dev python3 scripts/process-sprites.py

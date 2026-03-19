@@ -27,8 +27,16 @@ docker compose exec dev <command>
 # Rebuild container (after Dockerfile changes)
 docker compose up --build
 
-# Export web build (inside container)
+# Export web build (inside container, served from root "/")
 docker compose exec dev npx expo export --platform web
+
+# Export for subfolder hosting (e.g. yoursite.com/villianhitting/)
+# 1. Set experiments.baseUrl in app.json to "/villianhitting"
+# 2. Export:
+docker compose exec dev npx expo export --platform web
+# 3. Copy web-export/ contents to your subfolder
+# Note: baseUrl affects both asset paths and Expo Router route matching.
+#        Reset to "." or "/" when switching back to root hosting.
 
 # Process sprites (remove checker BG, resize, save to assets)
 docker compose exec dev python3 scripts/process-sprites.py
