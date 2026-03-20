@@ -6,6 +6,7 @@ import Animated, {
   withTiming,
   withSequence,
 } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 import { PixelText } from "../ui/PixelText";
 
 interface HPBarProps {
@@ -15,6 +16,7 @@ interface HPBarProps {
 }
 
 export function HPBar({ hp, maxHp, label }: HPBarProps) {
+  const { t } = useTranslation();
   const widthAnim = useSharedValue(100);
   const shakeX = useSharedValue(0);
 
@@ -44,7 +46,7 @@ export function HPBar({ hp, maxHp, label }: HPBarProps) {
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       <View style={styles.labelRow}>
-        <PixelText size="sm">{label || "氣數"}</PixelText>
+        <PixelText size="sm">{label || t("battle.hp")}</PixelText>
         <PixelText size="sm">
           {hp} / {maxHp}
         </PixelText>

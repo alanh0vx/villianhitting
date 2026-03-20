@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PixelText } from "../../src/components/ui/PixelText";
 import { PixelButton } from "../../src/components/ui/PixelButton";
 import { BlessingCard } from "../../src/components/ceremony/BlessingCard";
@@ -15,6 +16,7 @@ type PostBattlePhase = "dissolve" | "blessing" | "burn" | "divination" | "comple
 export default function BlessingScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   useCeremonyGuard("victory");
   const [phase, setPhase] = useState<PostBattlePhase>("dissolve");
 
@@ -44,44 +46,44 @@ export default function BlessingScreen() {
       {/* Phase: Dissolve */}
       {phase === "dissolve" && (
         <Pressable style={styles.phaseContainer} onPress={() => setPhase("blessing")}>
-          <View style={styles.stepBadge}>
+          <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
             <PixelText size="sm" style={{ color: "#f1c40f" }}>⑤ {t("ceremony.dissolve")}</PixelText>
           </View>
           <PixelText size="xl" style={styles.title}>{t("ceremony.dissolve")}</PixelText>
           <PixelText size="md" style={styles.desc}>{t("ceremony.dissolveDesc")}</PixelText>
-          <PixelText size="sm" style={styles.prompt}>{t("ceremony.tapToContinue")}</PixelText>
+          <PixelText size="sm" style={[styles.prompt, { bottom: Math.max(insets.bottom, 20) + 12 }]}>{t("ceremony.tapToContinue")}</PixelText>
         </Pressable>
       )}
 
       {/* Phase: Blessing */}
       {phase === "blessing" && (
         <Pressable style={styles.phaseContainer} onPress={() => setPhase("burn")}>
-          <View style={styles.stepBadge}>
+          <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
             <PixelText size="sm" style={{ color: "#f1c40f" }}>⑥ {t("ceremony.blessing")}</PixelText>
           </View>
           <PixelText size="xl" style={styles.title}>{t("ceremony.blessing")}</PixelText>
           <BlessingCard />
-          <PixelText size="sm" style={styles.prompt}>{t("ceremony.tapToContinue")}</PixelText>
+          <PixelText size="sm" style={[styles.prompt, { bottom: Math.max(insets.bottom, 20) + 12 }]}>{t("ceremony.tapToContinue")}</PixelText>
         </Pressable>
       )}
 
       {/* Phase: Burn offerings */}
       {phase === "burn" && (
         <Pressable style={styles.phaseContainer} onPress={() => setPhase("divination")}>
-          <View style={styles.stepBadge}>
+          <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
             <PixelText size="sm" style={{ color: "#f1c40f" }}>⑦ {t("ceremony.burnOfferings")}</PixelText>
           </View>
           <PixelText size="xl" style={styles.title}>{t("ceremony.burnOfferings")}</PixelText>
           <PixelText size="md" style={styles.desc}>{t("ceremony.burnOfferingsDesc")}</PixelText>
           <PaperBurning />
-          <PixelText size="sm" style={styles.prompt}>{t("ceremony.tapToContinue")}</PixelText>
+          <PixelText size="sm" style={[styles.prompt, { bottom: Math.max(insets.bottom, 20) + 12 }]}>{t("ceremony.tapToContinue")}</PixelText>
         </Pressable>
       )}
 
       {/* Phase: Divination */}
       {phase === "divination" && (
         <View style={styles.phaseContainer}>
-          <View style={styles.stepBadge}>
+          <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
             <PixelText size="sm" style={{ color: "#f1c40f" }}>⑧ {t("ceremony.divination")}</PixelText>
           </View>
           <DivinationBlocks onResult={handleDivinationResult} />
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
   },
   stepBadge: {
     position: "absolute",
-    top: 44,
     left: 12,
     backgroundColor: "rgba(0,0,0,0.7)",
     paddingHorizontal: 10,
@@ -151,7 +152,6 @@ const styles = StyleSheet.create({
   },
   prompt: {
     position: "absolute",
-    bottom: 40,
     color: "rgba(255,255,255,0.5)",
   },
 });

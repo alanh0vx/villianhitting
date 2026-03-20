@@ -12,6 +12,7 @@ import Animated, {
   withSpring,
   Easing,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PixelText } from "../src/components/ui/PixelText";
 import { PixelButton } from "../src/components/ui/PixelButton";
 import { useGameStore } from "../src/engine/GameState";
@@ -20,6 +21,7 @@ import { SPRITES, getClipStyle } from "../src/engine/SpriteSheet";
 export default function TitleScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
+  const insets = useSafeAreaInsets();
   const reset = useGameStore((s) => s.reset);
   const [grannyFrame, setGrannyFrame] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -126,10 +128,7 @@ export default function TitleScreen() {
               <PixelText size="lg" style={styles.modalTitle}>{t("tutorial.title")}</PixelText>
 
               <PixelText size="sm" style={styles.modalSubtitle}>
-                {i18n.language === "zh-HK"
-                  ? "打小人係香港鵝頸橋底嘅傳統民間習俗。相傳驚蟄當日百蟲初醒，人們會請神婆以拖鞋拍打紙小人，將惡運、小人統統打走，祈求神明庇佑、趨吉避凶。儀式共分八個步驟，由請神到擲筊，缺一不可。"
-                  : "Villain Hitting (打小人) is a traditional folk ritual from the Canal Road Flyover in Hong Kong. On the day of Jingzhe (Awakening of Insects), people hire a granny priestess to beat a paper effigy of their \"villain\" with a sandal, driving away bad luck and ill-wishers. The full ceremony has 8 steps, from inviting the gods to divination."
-                }
+                {t("ui.tutorialDescription")}
               </PixelText>
 
               <View style={styles.modalDivider} />
@@ -161,7 +160,7 @@ export default function TitleScreen() {
         </View>
       </Modal>
 
-      <PixelText size="sm" style={styles.footer}>鵝頸橋下打小人</PixelText>
+      <PixelText size="sm" style={[styles.footer, { bottom: Math.max(insets.bottom, 8) + 8 }]}>{t("ui.footer")}</PixelText>
     </View>
   );
 }
@@ -185,7 +184,7 @@ const styles = StyleSheet.create({
   },
   titleArea: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 16,
     zIndex: 2,
   },
   title: {
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
   grannyRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 20,
     zIndex: 2,
     gap: 8,
   },
@@ -211,7 +210,7 @@ const styles = StyleSheet.create({
   },
   buttonArea: {
     alignItems: "center",
-    gap: 16,
+    gap: 12,
     zIndex: 2,
   },
   langButton: {
@@ -221,7 +220,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: "absolute",
-    bottom: 20,
     color: "rgba(255,255,255,0.3)",
   },
   modalOverlay: {

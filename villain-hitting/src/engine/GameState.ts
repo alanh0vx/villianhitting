@@ -65,6 +65,8 @@ export interface GameState {
   triggerTiger: () => void;
   feedTiger: () => void;
   dismissTiger: () => void;
+  consumeStamina: (amount: number) => boolean;
+  regenStamina: () => void;
   setAnimating: (v: boolean) => void;
   reset: () => void;
 }
@@ -101,7 +103,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   initVillain: () => {
     const hp = Math.floor(Math.random() * 900) + 100; // 100-999
-    set({ villainHp: hp, villainMaxHp: hp, turn: 1, chargeCount: 0, dotDamage: 0, defDebuff: 0 });
+    set({ villainHp: hp, villainMaxHp: hp, turn: 1, chargeCount: 0, dotDamage: 0, defDebuff: 0, grannyStamina: 100 });
   },
 
   selectChant: (id) => {
@@ -197,6 +199,20 @@ export const useGameStore = create<GameState>((set, get) => ({
   feedTiger: () => set({ tigerBonusDamage: 50, tigerActive: false, isAnimating: false }),
 
   dismissTiger: () => set({ tigerActive: false, isAnimating: false }),
+
+  consumeStamina: (amount) => {
+    const { grannyStamina } = get();
+    if (grannyStamina < amount) return false;
+    set({ grannyStamina: grannyStamina - amount });
+    return true;
+  },
+
+  regenStamina: () => {
+    const { grannyStamina, grannyMaxStamina } = get();
+    if (grannyStamina < grannyMaxStamina) {
+      set({ grannyStamina: Math.min(grannyStamina + 5, grannyMaxStamina) });
+    }
+  },
 
   setAnimating: (v) => set({ isAnimating: v }),
 

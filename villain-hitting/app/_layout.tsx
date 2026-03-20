@@ -1,23 +1,26 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StyleSheet, View, Platform } from "react-native";
 import "../src/i18n";
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={styles.root}>
-      <StatusBar style="light" />
-      <View style={styles.phoneFrame}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: "#1a0a2e" },
-            animation: "fade",
-          }}
-        />
-      </View>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={styles.root}>
+        <StatusBar style="light" />
+        <View style={styles.phoneFrame}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: "#1a0a2e" },
+              animation: "fade",
+            }}
+          />
+        </View>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

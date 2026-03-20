@@ -48,6 +48,9 @@
     "tigerEvent": "White Tiger appears! Feed pork for damage bonus!",
     "tigerFeed": "Feed Tiger",
     "tigerSkip": "Skip",
+    "tigerFed": "🐯 Fed the tiger! ATK UP",
+    "tigerSkipped": "🐯 Tiger left",
+    "stamina": "Stamina",
     "defeated": "{{name}} Defeated!"
   },
   "chants": {
@@ -105,5 +108,16 @@
     "love": "Love & Romance",
     "career": "Career Success",
     "family": "Family Harmony"
+  },
+  "ui": {
+    "tossBlocks": "🙏 Toss Blocks",
+    "grannyBlessing": "✦ Granny's Blessing ✦",
+    "reChoosePhoto": "Re-pick Photo",
+    "originalPhoto": "Original",
+    "pixelated": "Pixelated",
+    "defaultVillainName": "Villain",
+    "turnCount": "Turns: {{count}}",
+    "footer": "Villain Hitting at Canal Road",
+    "tutorialDescription": "Villain Hitting (打小人) is a traditional folk ritual from the Canal Road Flyover in Hong Kong. On the day of Jingzhe (Awakening of Insects), people hire a granny priestess to beat a paper effigy of their \"villain\" with a sandal, driving away bad luck and ill-wishers. The full ceremony has 8 steps, from inviting the gods to divination."
   }
 }

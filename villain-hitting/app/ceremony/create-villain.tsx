@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PixelText } from "../../src/components/ui/PixelText";
 import { PixelButton } from "../../src/components/ui/PixelButton";
 import { MenuPanel } from "../../src/components/ui/MenuPanel";
@@ -23,6 +24,7 @@ const SAMPLE_VILLAIN = require("../../src/assets/sprites/sample-villain.jpg");
 export default function CreateVillainScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const { setVillainImage, initVillain, villainMaxHp, setCeremonyStep, setVillainName, setCustomChants } = useGameStore();
   useCeremonyGuard("invite-gods");
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -130,7 +132,7 @@ export default function CreateVillainScreen() {
       <View style={styles.overlay} />
 
       {/* Step indicator */}
-      <View style={styles.stepBadge}>
+      <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
         <PixelText size="sm" style={{ color: "#f1c40f" }}>
           ② {t("ceremony.declaration")}
         </PixelText>
@@ -172,7 +174,7 @@ export default function CreateVillainScreen() {
           <Animated.View style={[styles.effigyContainer, effigyStyle]}>
             <MenuPanel style={styles.effigyPanel}>
               <PixelText size="md" style={{ color: "#f1c40f" }}>
-                {t("ceremony.villainReady", { name: nameInput || "小人" })}
+                {t("ceremony.villainReady", { name: nameInput || t("ui.defaultVillainName") })}
               </PixelText>
 
               {/* Paper effigy sprite with photo overlay inside */}
@@ -194,18 +196,18 @@ export default function CreateVillainScreen() {
               {/* Before / after comparison */}
               <View style={styles.compareRow}>
                 <View style={styles.compareItem}>
-                  <PixelText size="sm">原相</PixelText>
+                  <PixelText size="sm">{t("ui.originalPhoto")}</PixelText>
                   <Image source={{ uri: imageUri! }} style={styles.thumbImage} resizeMode="cover" />
                 </View>
                 <PixelText size="lg">→</PixelText>
                 <View style={styles.compareItem}>
-                  <PixelText size="sm">小人化</PixelText>
+                  <PixelText size="sm">{t("ui.pixelated")}</PixelText>
                   <Image source={{ uri: pixelatedUri }} style={styles.thumbImage} resizeMode="cover" />
                 </View>
               </View>
 
               <View style={styles.hpDisplay}>
-                <PixelText size="sm">{t("ceremony.villainHP", { name: nameInput || "小人" })}:</PixelText>
+                <PixelText size="sm">{t("ceremony.villainHP", { name: nameInput || t("ui.defaultVillainName") })}:</PixelText>
                 <PixelText size="lg" style={{ color: "#e74c3c" }}>{villainMaxHp}</PixelText>
               </View>
             </MenuPanel>
@@ -264,7 +266,7 @@ export default function CreateVillainScreen() {
             <PixelButton
               title={`👡 ${t("battle.title")}`}
               onPress={() => {
-                setVillainName(nameInput.trim() || "小人");
+                setVillainName(nameInput.trim() || t("ui.defaultVillainName"));
                 setCustomChants(chants);
                 router.push("/battle");
               }}
@@ -274,7 +276,7 @@ export default function CreateVillainScreen() {
 
             {/* Re-pick */}
             <PixelButton
-              title="重新揀相"
+              title={t("ui.reChoosePhoto")}
               onPress={() => {
                 setPixelatedUri(null);
                 setImageUri(null);
@@ -320,7 +322,6 @@ const styles = StyleSheet.create({
   },
   stepBadge: {
     position: "absolute",
-    top: 44,
     left: 12,
     backgroundColor: "rgba(0,0,0,0.7)",
     paddingHorizontal: 10,
@@ -334,8 +335,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 24,
-    paddingTop: 80,
-    paddingBottom: 40,
+    paddingTop: 60,
+    paddingBottom: 24,
   },
   title: {
     color: "#f1c40f",

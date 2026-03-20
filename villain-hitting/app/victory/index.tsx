@@ -11,6 +11,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PixelText } from "../../src/components/ui/PixelText";
 import { PixelButton } from "../../src/components/ui/PixelButton";
 import { useGameStore } from "../../src/engine/GameState";
@@ -20,8 +21,9 @@ import { useCeremonyGuard } from "../../src/hooks/useCeremonyGuard";
 export default function VictoryScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const { turn, villainName } = useGameStore();
-  const displayName = villainName || "小人";
+  const displayName = villainName || t("ui.defaultVillainName");
   useCeremonyGuard("battle");
   const [grannyFrame, setGrannyFrame] = useState(0);
 
@@ -62,7 +64,7 @@ export default function VictoryScreen() {
   const grannyClip = getClipStyle(SPRITES.grannyVictory, grannyFrame, 2.5);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       {/* Confetti */}
       <Animated.View style={[styles.confettiContainer, confettiStyle]}>
         {Array.from({ length: 20 }).map((_, i) => (
@@ -102,7 +104,7 @@ export default function VictoryScreen() {
 
       {/* Stats */}
       <View style={styles.stats}>
-        <PixelText size="md">回合數: {turn - 1}</PixelText>
+        <PixelText size="md">{t("ui.turnCount", { count: turn - 1 })}</PixelText>
       </View>
 
       {/* Continue to post-battle ceremony */}
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
   },
   titleArea: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 16,
   },
   title: {
     color: "#f1c40f",
@@ -146,14 +148,14 @@ const styles = StyleSheet.create({
   },
   grannyArea: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 16,
   },
   stats: {
     backgroundColor: "rgba(0,0,0,0.4)",
     padding: 12,
     borderWidth: 1,
     borderColor: "#f1c40f",
-    marginBottom: 24,
+    marginBottom: 16,
   },
   actions: {
     gap: 12,

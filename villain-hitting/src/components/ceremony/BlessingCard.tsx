@@ -40,7 +40,7 @@ export function BlessingCard() {
         </PixelText>
         <View style={styles.ornament}>
           <PixelText size="sm" style={{ color: "#f1c40f" }}>
-            ✦ 神婆賜福 ✦
+            {t("ui.grannyBlessing")}
           </PixelText>
         </View>
       </View>

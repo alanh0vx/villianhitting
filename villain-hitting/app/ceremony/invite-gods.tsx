@@ -11,6 +11,7 @@ import Animated, {
   withSequence,
   Easing,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PixelText } from "../../src/components/ui/PixelText";
 import { IncenseAnimation } from "../../src/components/ceremony/IncenseAnimation";
 import { useGameStore } from "../../src/engine/GameState";
@@ -22,6 +23,7 @@ type PreBattlePhase = "invite" | "declare";
 export default function InviteGodsScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const setCeremonyStep = useGameStore((s) => s.setCeremonyStep);
   const { grannyStamina, grannyMaxStamina } = useGameStore();
   useCeremonyGuard("title");
@@ -116,7 +118,7 @@ export default function InviteGodsScreen() {
       <View style={styles.overlay} />
 
       {/* Step indicator */}
-      <View style={styles.stepBadge}>
+      <View style={[styles.stepBadge, { top: Math.max(insets.top, 8) + 4 }]}>
         <PixelText size="sm" style={{ color: "#f1c40f" }}>
           {stepLabel}
         </PixelText>
@@ -168,7 +170,7 @@ export default function InviteGodsScreen() {
         </View>
       </View>
 
-      <Animated.View style={[styles.prompt, promptStyle]}>
+      <Animated.View style={[styles.prompt, promptStyle, { bottom: Math.max(insets.bottom, 20) + 12 }]}>
         <PixelText size="sm" style={{ color: "rgba(255,255,255,0.6)" }}>
           {t("ceremony.tapToContinue")}
         </PixelText>
@@ -194,7 +196,6 @@ const styles = StyleSheet.create({
   },
   stepBadge: {
     position: "absolute",
-    top: 44,
     left: 12,
     backgroundColor: "rgba(0,0,0,0.7)",
     paddingHorizontal: 10,
@@ -251,7 +252,6 @@ const styles = StyleSheet.create({
   },
   prompt: {
     position: "absolute",
-    bottom: 40,
     alignSelf: "center",
   },
 });

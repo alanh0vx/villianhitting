@@ -48,6 +48,9 @@
     "tigerEvent": "白虎出沒！餵豬肉加攻擊力！",
     "tigerFeed": "餵白虎",
     "tigerSkip": "略過",
+    "tigerFed": "🐯 餵咗白虎！攻擊力UP",
+    "tigerSkipped": "🐯 白虎走咗",
+    "stamina": "體力",
     "defeated": "{{name}}已滅！"
   },
   "chants": {
@@ -105,5 +108,16 @@
     "love": "姻緣美滿",
     "career": "事業順利",
     "family": "家宅平安"
+  },
+  "ui": {
+    "tossBlocks": "🙏 擲筊",
+    "grannyBlessing": "✦ 神婆賜福 ✦",
+    "reChoosePhoto": "重新揀相",
+    "originalPhoto": "原相",
+    "pixelated": "小人化",
+    "defaultVillainName": "小人",
+    "turnCount": "回合數: {{count}}",
+    "footer": "鵝頸橋下打小人",
+    "tutorialDescription": "打小人係香港鵝頸橋底嘅傳統民間習俗。相傳驚蟄當日百蟲初醒，人們會請神婆以拖鞋拍打紙小人，將惡運、小人統統打走，祈求神明庇佑、趨吉避凶。儀式共分八個步驟，由請神到擲筊，缺一不可。"
   }
 }

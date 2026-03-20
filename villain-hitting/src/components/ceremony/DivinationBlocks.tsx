@@ -124,7 +124,7 @@ export function DivinationBlocks({ onResult }: DivinationBlocksProps) {
       )}
 
       <Pressable onPress={toss} disabled={isTossing} style={styles.tossArea}>
-        <PixelText>{isTossing ? "..." : "🙏 擲筊"}</PixelText>
+        <PixelText>{isTossing ? "..." : t("ui.tossBlocks")}</PixelText>
       </Pressable>
     </View>
   );

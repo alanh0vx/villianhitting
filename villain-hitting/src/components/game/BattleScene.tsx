@@ -9,6 +9,7 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { useGameStore } from "../../engine/GameState";
 import { SPRITES, WEAPON_SPRITE_INDEX, getClipStyle } from "../../engine/SpriteSheet";
@@ -30,17 +31,20 @@ interface BattleSceneProps {
 
 export function BattleScene({ onVictory }: BattleSceneProps) {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const {
     villainHp, villainMaxHp, villainImageUri,
     villainName, customChants,
     selectedChant, selectedWeapon, selectedMove,
     turn, chargeCount, tigerActive, isAnimating,
     lastDamage, lastCrit,
+    grannyStamina, grannyMaxStamina,
     selectChant, selectWeapon, selectMove,
     performAttack, applyDot, feedTiger, dismissTiger, triggerTiger,
+    consumeStamina, regenStamina,
     setAnimating,
   } = useGameStore();
-  const displayName = villainName || "小人";
+  const displayName = villainName || t("ui.defaultVillainName");
 
   const [showChantBubble, setShowChantBubble] = useState(false);
   const [isHit, setIsHit] = useState(false);
@@ -48,6 +52,7 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
   const [activeTab, setActiveTab] = useState<"chant" | "weapon" | "move">("chant");
   const [chantDropdownOpen, setChantDropdownOpen] = useState(false);
   const [chantHistory, setChantHistory] = useState<string[]>([]);
+  const [tigerHistory, setTigerHistory] = useState<string[]>([]);
   const [selectedCustomChant, setSelectedCustomChant] = useState<string | null>(null);
   const marqueeX = useSharedValue(0);
   const marqueeContainerWidth = useRef(300);
@@ -73,12 +78,35 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
     ));
   }, [chantHistory.length]);
 
+  // Stamina regen every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      regenStamina();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const marqueeStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: marqueeX.value }],
   }));
 
+  // Wrap tiger actions to record history
+  const handleFeedTiger = useCallback(() => {
+    setTigerHistory((prev) => [t("battle.tigerFed"), ...prev].slice(0, 10));
+    feedTiger();
+  }, []);
+
+  const handleDismissTiger = useCallback(() => {
+    setTigerHistory((prev) => [t("battle.tigerSkipped"), ...prev].slice(0, 10));
+    dismissTiger();
+  }, []);
+
   const handleAttack = useCallback(() => {
     if (isAnimating) return;
+    // Consume stamina (20 per attack)
+    const hasStamina = consumeStamina(20);
+    if (!hasStamina) return;
+
     setAnimating(true);
     setShowChantBubble(true);
 
@@ -134,11 +162,11 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
       />
 
       {/* Top HUD */}
-      <View style={styles.hud}>
+      <View style={[styles.hud, { paddingTop: Math.max(insets.top, 8) }]}>
         <View style={styles.turnBadge}>
           <PixelText size="sm">{t("battle.turn", { turn })}</PixelText>
         </View>
-        <HPBar hp={villainHp} maxHp={villainMaxHp} label={`${displayName} 氣數`} />
+        <HPBar hp={villainHp} maxHp={villainMaxHp} label={t("ceremony.villainHP", { name: displayName })} />
         {/* Poem history marquee */}
         {chantHistory.length > 0 && (
           <View
@@ -152,6 +180,14 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
             >
               {chantHistory.join("  ·  ")}
             </Animated.Text>
+          </View>
+        )}
+        {/* Tiger event history */}
+        {tigerHistory.length > 0 && (
+          <View style={styles.tigerHistoryRow}>
+            <Text style={styles.tigerHistoryText} numberOfLines={1}>
+              {tigerHistory[0]}
+            </Text>
           </View>
         )}
       </View>
@@ -200,14 +236,23 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
         <MenuPanel style={styles.tigerPanel}>
           <PixelText size="sm" style={{ flex: 1 }}>{t("battle.tigerEvent")}</PixelText>
           <View style={styles.tigerButtons}>
-            <PixelButton title={t("battle.tigerFeed")} onPress={feedTiger} color="#f39c12" size="sm" />
-            <PixelButton title={t("battle.tigerSkip")} onPress={dismissTiger} color="#888" size="sm" />
+            <PixelButton title={t("battle.tigerFeed")} onPress={handleFeedTiger} color="#f39c12" size="sm" />
+            <PixelButton title={t("battle.tigerSkip")} onPress={handleDismissTiger} color="#888" size="sm" />
           </View>
         </MenuPanel>
       )}
 
+      {/* Stamina bar */}
+      <View style={styles.staminaContainer}>
+        <PixelText size="sm" style={{ color: "#3498db" }}>{t("battle.stamina")}</PixelText>
+        <View style={styles.staminaBarBg}>
+          <View style={[styles.staminaBarFill, { width: `${(grannyStamina / grannyMaxStamina) * 100}%` as `${number}%` }]} />
+        </View>
+        <PixelText size="sm" style={{ color: "#aaa" }}>{grannyStamina}/{grannyMaxStamina}</PixelText>
+      </View>
+
       {/* Bottom controls */}
-      <View style={styles.controls}>
+      <View style={[styles.controls, { paddingBottom: insets.bottom }]}>
         {/* Tabs */}
         <View style={styles.tabRow}>
           {(["chant", "weapon", "move"] as const).map((tab) => (
@@ -275,7 +320,7 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
             )}
           </View>
         ) : (
-          <ScrollView style={styles.selectionPanel} horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView style={styles.selectionPanel} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 8 }}>
             {activeTab === "weapon" && WEAPONS.map((weapon) => (
               <Pressable
                 key={weapon.id}
@@ -338,7 +383,6 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   hud: {
-    paddingTop: 44,
     paddingHorizontal: 8,
     zIndex: 10,
   },
@@ -364,6 +408,19 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  tigerHistoryRow: {
+    marginTop: 3,
+    marginHorizontal: 4,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 2,
+  },
+  tigerHistoryText: {
+    color: "rgba(243, 156, 18, 0.8)",
+    fontSize: 9,
+    fontWeight: "bold",
   },
   // Vertical battle layout: granny on top, effigy below
   battleArea: {
@@ -427,6 +484,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 6,
   },
+  staminaContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    gap: 6,
+  },
+  staminaBarBg: {
+    flex: 1,
+    height: 10,
+    backgroundColor: "#333",
+    borderWidth: 1,
+    borderColor: "#3498db",
+    overflow: "hidden",
+  },
+  staminaBarFill: {
+    height: "100%",
+    backgroundColor: "#3498db",
+  },
   controls: {
     backgroundColor: "rgba(26, 10, 46, 0.95)",
     borderTopWidth: 2,
@@ -447,7 +524,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(241, 196, 15, 0.2)",
   },
   selectionPanel: {
-    maxHeight: 120,
+    maxHeight: 90,
     borderTopWidth: 1,
     borderTopColor: "rgba(241, 196, 15, 0.3)",
   },
@@ -468,7 +545,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#f1c40f",
   },
   chantDropdownList: {
-    maxHeight: 150,
+    maxHeight: 120,
   },
   chantDropdownItem: {
     padding: 8,
@@ -483,7 +560,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#555",
     backgroundColor: "rgba(26, 10, 46, 0.9)",
-    minWidth: 75,
+    minWidth: 65,
     alignItems: "center",
   },
   selectedItem: {
@@ -497,7 +574,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   attackRow: {
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     alignItems: "center",
   },
 });
