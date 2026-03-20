@@ -29,7 +29,7 @@
       "bundler": "metro"
     },
     "experiments": {
-      "baseUrl": "/villianhitting"
+      "baseUrl": "/villainhitting"
     },
     "scheme": "villain-hitting",
     "plugins": [

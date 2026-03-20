@@ -56,7 +56,7 @@ A Hong Kong traditional 打小人 (villain hitting) folk ritual game. Upload a v
 ```bash
 # Clone and start
 git clone <repo-url>
-cd villianhitting
+cd villainhitting
 docker compose up
 ```
 
@@ -71,9 +71,9 @@ docker compose exec dev npx expo install <package-name>
 # Export web build (served from root "/")
 docker compose exec dev npx expo export --platform web
 
-# Export for subfolder hosting (e.g. yoursite.com/villianhitting/)
+# Export for subfolder hosting (e.g. yoursite.com/villainhitting/)
 # 1. Set experiments.baseUrl in villain-hitting/app.json:
-#    "experiments": { "baseUrl": "/villianhitting" }
+#    "experiments": { "baseUrl": "/villainhitting" }
 # 2. Export:
 docker compose exec dev npx expo export --platform web
 # 3. Copy villain-hitting/web-export/ contents to your subfolder

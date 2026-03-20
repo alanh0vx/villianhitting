@@ -37,7 +37,7 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
     turn, chargeCount, tigerActive, isAnimating,
     lastDamage, lastCrit,
     selectChant, selectWeapon, selectMove,
-    performAttack, applyDot, feedTiger, triggerTiger,
+    performAttack, applyDot, feedTiger, dismissTiger, triggerTiger,
     setAnimating,
   } = useGameStore();
   const displayName = villainName || "小人";
@@ -86,10 +86,6 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
     const chantText = selectedCustomChant || t(selectedChant.i18nKey);
     setChantHistory((prev) => [chantText, ...prev].slice(0, 20));
 
-    if (Math.random() < 0.1 && !tigerActive) {
-      triggerTiger();
-    }
-
     setTimeout(() => {
       setIsHit(true);
       const damage = performAttack();
@@ -102,9 +98,15 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
         setTimeout(() => {
           setShowChantBubble(false);
           setShowDamage(false);
-          setAnimating(false);
+
           if (useGameStore.getState().villainHp <= 0) {
+            setAnimating(false);
             setTimeout(() => onVictory(), 500);
+          } else if (Math.random() < 0.3) {
+            // Tiger event — triggers AFTER the attack, pauses until user interacts
+            triggerTiger();
+          } else {
+            setAnimating(false);
           }
         }, 1500);
       }, 600);
@@ -193,11 +195,14 @@ export function BattleScene({ onVictory }: BattleSceneProps) {
         </View>
       </View>
 
-      {/* Tiger event */}
+      {/* Tiger event — appears after attack, blocks input until user responds */}
       {tigerActive && (
         <MenuPanel style={styles.tigerPanel}>
-          <PixelText size="sm">{t("battle.tigerEvent")}</PixelText>
-          <PixelButton title={t("battle.tigerFeed")} onPress={feedTiger} color="#f39c12" size="sm" />
+          <PixelText size="sm" style={{ flex: 1 }}>{t("battle.tigerEvent")}</PixelText>
+          <View style={styles.tigerButtons}>
+            <PixelButton title={t("battle.tigerFeed")} onPress={feedTiger} color="#f39c12" size="sm" />
+            <PixelButton title={t("battle.tigerSkip")} onPress={dismissTiger} color="#888" size="sm" />
+          </View>
         </MenuPanel>
       )}
 
@@ -417,6 +422,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(243, 156, 18, 0.9)",
     borderColor: "#f39c12",
     zIndex: 20,
+  },
+  tigerButtons: {
+    flexDirection: "row",
+    gap: 6,
   },
   controls: {
     backgroundColor: "rgba(26, 10, 46, 0.95)",

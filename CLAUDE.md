@@ -30,8 +30,8 @@ docker compose up --build
 # Export web build (inside container, served from root "/")
 docker compose exec dev npx expo export --platform web
 
-# Export for subfolder hosting (e.g. yoursite.com/villianhitting/)
-# 1. Set experiments.baseUrl in app.json to "/villianhitting"
+# Export for subfolder hosting (e.g. yoursite.com/villainhitting/)
+# 1. Set experiments.baseUrl in app.json to "/villainhitting"
 # 2. Export:
 docker compose exec dev npx expo export --platform web
 # 3. Copy web-export/ contents to your subfolder

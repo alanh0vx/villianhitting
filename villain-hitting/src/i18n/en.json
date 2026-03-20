@@ -47,14 +47,15 @@
     "turn": "Turn {{turn}}",
     "tigerEvent": "White Tiger appears! Feed pork for damage bonus!",
     "tigerFeed": "Feed Tiger",
+    "tigerSkip": "Skip",
     "defeated": "{{name}} Defeated!"
   },
   "chants": {
     "head": "Hit your villain head, leave you breathless with dread",
     "face": "Hit your villain face, no money for your disgrace",
-    "eyes": "Hit your villain eyes, a lifetime of demise",
-    "ears": "Hit your villain ears, stripped of wealth and tears",
-    "mouth": "Hit your villain mouth, your anger heading south",
+    "eyes": "Hit your villain eyes, leave them glazed in a daze",
+    "ears": "Hit your villain ears, eat dirt for all your years",
+    "mouth": "Hit your villain mouth, get smacked from north to south",
     "belly": "Hit your villain belly, sued daily on the telly",
     "hands": "Hit your villain hands, no love at your commands",
     "feet": "Hit your villain feet, no shoes upon the street"

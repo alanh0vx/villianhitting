@@ -64,6 +64,7 @@ export interface GameState {
   applyDot: () => void;
   triggerTiger: () => void;
   feedTiger: () => void;
+  dismissTiger: () => void;
   setAnimating: (v: boolean) => void;
   reset: () => void;
 }
@@ -175,7 +176,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       chargeCount: resetCharge,
       defDebuff: Math.min(newDefDebuff, 0.75),
       dotDamage: newDot,
-      tigerActive: false,
       tigerBonusDamage: 0,
       lastDamage: totalDamage,
       lastCrit: wasCrit,
@@ -192,9 +192,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
   },
 
-  triggerTiger: () => set({ tigerActive: true }),
+  triggerTiger: () => set({ tigerActive: true, isAnimating: true }),
 
-  feedTiger: () => set({ tigerBonusDamage: 50, tigerActive: false }),
+  feedTiger: () => set({ tigerBonusDamage: 50, tigerActive: false, isAnimating: false }),
+
+  dismissTiger: () => set({ tigerActive: false, isAnimating: false }),
 
   setAnimating: (v) => set({ isAnimating: v }),
 
